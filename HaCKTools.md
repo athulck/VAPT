@@ -83,6 +83,8 @@ This category often features programs from all operating systems which must be r
 
 Ofcouse you can try `IDA Pro` or `Ghidra`. But you can also start with `strings`! :heart_eyes:
 
+[Dogbolt](https://dogbolt.org/) is an online decompiler for files < 2MB. The opposite can be done with [Godbolt] (https://godbolt.org/)
+
 ### ELF Reversing
 ### EXE Reversing
 
