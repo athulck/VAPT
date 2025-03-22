@@ -83,12 +83,18 @@ This category often features programs from all operating systems which must be r
 
 Ofcouse you can try `IDA Pro` or `Ghidra`. But you can also start with `strings`! :heart_eyes:
 
-[Dogbolt](https://dogbolt.org/) is an online decompiler for files < 2MB. The opposite can be done with [Godbolt] (https://godbolt.org/)
+[Dogbolt](https://dogbolt.org/) is an online decompiler for files < 2MB. The opposite can be done with [Godbolt](https://godbolt.org/)
 
 ### ELF Reversing
 ### EXE Reversing
 
 ### Android APK Reversing
+
+`gplaycli` for installing apks from Google PlayStore. (4+ yrs Old)
+
+[APKiD](https://github.com/rednaga/APKiD) gives you information about how an APK was made. It identifies many compilers, packers, obfuscators, and other
+weird stuff.
+
 `apktool`
 
 [bytecode-viewer](https://github.com/Konloch/bytecode-viewer) : Android APK Reverse Engineering Suite
