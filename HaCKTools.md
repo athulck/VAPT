@@ -17,6 +17,8 @@ Mandatory checks for `robots.txt` and `security.txt`.
 ```
 curl http://$TG/robots.txt
 curl http://$TG/.well-known/security.txt
+curl http://$TG/sitemap.xml
+curl http://$TG/sitemaps.xml
 ```
 
 ```
@@ -128,6 +130,18 @@ Wireshark FTW!
 
 ## OSINT
 
+```
+host $TG
+whois $TG
+dnsrecon -d $TG
+wafw00f $TG --findall
+```
+
+Passive Subdomain enumeration and email (and other info) gathering.
+```
+sublist3r -d $TG -e google,yahoo
+theHarvester -d $TG -b google,linkedin
+```
 
 ## Blockchain
 
@@ -157,7 +171,7 @@ responder -I <INTERFACE>
 ## 1. Information Gathering and Reconnaissance
 
 [DNS lookup](https://dnschecker.org/all-dns-records-of-domain.php) | [Abuse IPDB](https://www.abuseipdb.com/) | [Shodan](https://www.shodan.io/) | 
-[WayBackMachine](https://archive.org/web/) | [VirusTotal](https://www.virustotal.com/gui/home/search) | [App.Any.Run](https://app.any.run/)
+[WayBackMachine](https://archive.org/web/) | [VirusTotal](https://www.virustotal.com/gui/home/search) | [App.Any.Run](https://app.any.run/) | [DNSDumpster](https://dnsdumpster.com/)
 
 
 ## 2. Scanning and Enumeration
