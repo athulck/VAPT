@@ -139,6 +139,7 @@ Wireshark FTW!
 ```
 host $TG
 whois $TG
+whatweb $TG
 dnsrecon -d $TG
 wafw00f $TG --findall
 ```
