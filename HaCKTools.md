@@ -22,7 +22,13 @@ curl http://$TG/sitemaps.xml
 ```
 
 ```
+dirb $TG # Uses default wordlist
 gobuster dir -u $TG -w /usr/share/wordlists/wfuzz/general/common.txt
+```
+
+With Extensions
+```
+dirb $TG -X .bak,.tar.gz,.zip,.sql,.bak.zip
 gobuster dir -u $TG -x html,php,js -w /usr/share/wordlists/wfuzz/general/common.txt
 ```
 
