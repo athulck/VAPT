@@ -143,6 +143,24 @@ sublist3r -d $TG -e google,yahoo
 theHarvester -d $TG -b google,linkedin
 ```
 
+
+##### DNS Zone Transfer
+You do DNS zone transfer on publically accessible DNS servers which could possibly have internal domain/sub-domain DNS records.
+
+Step 1:  Get all DNS name servers of the target domain
+```dig ns <target domain>```
+Step 2: Check if NS allows zone transfers
+```dig axfr @<domain of name server> <target domain>```
+
+*OR*
+
+Use: `dnsenum <target domain>` for automated Zone Transfer
+
+*OR*
+
+Use: `fierce -dns <target domain>` for automated Zone Transfer
+
+
 ## Blockchain
 
 
