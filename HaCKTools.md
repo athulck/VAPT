@@ -148,8 +148,11 @@ theHarvester -d $TG -b google,linkedin
 You do DNS zone transfer on publically accessible DNS servers which could possibly have internal domain/sub-domain DNS records.
 
 Step 1:  Get all DNS name servers of the target domain
+
 ```dig ns <target domain>```
+
 Step 2: Check if NS allows zone transfers
+
 ```dig axfr @<domain of name server> <target domain>```
 
 *OR*
@@ -195,6 +198,35 @@ responder -I <INTERFACE>
 ## 2. Scanning and Enumeration
 
 #### Nmap
+
+Host Discovery
+
+ -sn (No port scan) : This option tells Nmap not to do a port scan after host discovery, and only print out the available hosts that responded to the host discovery probes. This is often known as a “ping scan” or a "ping sweep", and is more reliable than pinging the broadcast address because many hosts do not reply to broadcast queries.
+
+The default host discovery done with -sn consists of an ICMP echo request, TCP SYN to port 443, TCP ACK to port 80, and an ICMP timestamp request by default. When executed by an unprivileged user, only SYN packets are sent (using a connect call) to ports 80 and 443 on the target. When a privileged user tries to scan targets on a local ethernet network, ARP requests are used unless --send-ip was specified. The -sn option can be combined with any of the discovery probe types (the -P* options) for greater flexibility. If any of those probe type and port number options are used, the default probes are overridden. When strict firewalls           are in place between the source host running Nmap and the target network, using those advanced techniques is recommended. Otherwise hosts could be missed when the firewall drops probes or their responses.
+
+
+```
+sudo nmap -sn <target>
+
+# TCP SYN Ping Scan
+nmap -sn -PS <target>
+
+# TCP ACK Ping Scan
+nmap -sn -PA <target>
+
+# ARP Ping Scan
+nmap -sn -PR <target>
+
+# UDP Ping Scan
+nmap -sn -PU <target>
+
+# ICMP Echo Ping Scan:
+nmap -sn -PE <target>
+```
+
+
+Port Scanning
 ```
 sudo nmap -sS $TG -vvv -oN Nmap_init.txt
 sudo nmap -sS -A $TG -vvv -oN Nmap_init.txt
