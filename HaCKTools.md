@@ -422,6 +422,29 @@ For salted hash, `hashcat` expects the input file to be in the format `<hash>:<s
 `msfconsole` is your friend here :smile:
 
 
+```
+db_status   # Making sure Postgresql DB is good and connected.
+
+workspace --add <NEW_WORKSPACE_NAME>
+db_stats
+
+db_import <NMAP-oX.xml>   # OR run nmap within msfconsole using db_nmap -sS <TARGET>
+
+hosts
+services
+vulns
+
+
+
+meterpreter > run autoroute -s 192.64.132.2
+
+[!] Meterpreter scripts are deprecated. Try post/multi/manage/autoroute.
+[!] Example: run post/multi/manage/autoroute OPTION=value [...]
+
+```
+
+
+
 Once you got shell using metasploit, try [upgrading the shell](https://infosecwriteups.com/metasploit-upgrade-normal-shell-to-meterpreter-shell-2f09be895646).
 Background the current shell by typing **Ctrl + z**. Then;
 ```
