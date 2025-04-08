@@ -325,10 +325,11 @@ enum4linux $TG
 Syntax: `smbclient -L //server/[service] -U <USERNAME>`
 Syntax: `smbclient -L -N //server/[service] -U <USERNAME>` for no password.
 
+
 ```
 smbclient -L //$TG/ -U '<USERNAME>'
-
 smbclient -L //$TG/<SHARE> -U '<USERNAME>'
+smbclient -I //$TG/ -U '<USERNAME>' -P '<PASSWORD>'  
 ```
 
 
@@ -340,6 +341,30 @@ evil-winrm  -i 192.168.1.100 -u Administrator -p 'MySuperSecr3tPass123!' -s '/ho
 ```
 evil-winrm -i 10.10.196.249 -u Administrator -H '0e0363213e37b94221497260b0bcb4fc'
 ```
+
+
+```
+nmap -p445 --script smb-protocols $TG
+nmap -p445 --script smb-security-mode demo.ine.local
+nmap -p445 --script smb-enum-sessions demo.ine.local
+nmap -p445 --script smb-enum-shares demo.ine.local
+
+nmap -p445 --script smb-server-stats --script-args smbusername=administrator,smbpassword=smbserver_771 demo.ine.local
+
+nmap -p445 --script smb-enum-sessions --script-args smbusername=administrator,smbpassword=smbserver_771 demo.ine.local
+nmap -p445 --script smb-enum-shares   --script-args smbusername=administrator,smbpassword=smbserver_771 demo.ine.local
+nmap -p445 --script smb-enum-users    --script-args smbusername=administrator,smbpassword=smbserver_771 demo.ine.local
+nmap -p445 --script smb-enum-domains  --script-args smbusername=administrator,smbpassword=smbserver_771 demo.ine.local
+nmap -p445 --script smb-enum-groups   --script-args smbusername=administrator,smbpassword=smbserver_771 demo.ine.local
+nmap -p445 --script smb-enum-services --script-args smbusername=administrator,smbpassword=smbserver_771 demo.ine.local
+
+# Enumerating folders
+nmap -p445 --script smb-enum-shares,smb-ls --script-args smbusername=administrator,smbpassword=smbserver_771 demo.ine.local
+```
+
+
+[About IPC$ share](https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/inter-process-communication-share-null-session)
+The `IPC$` share is also known as a null session connection. By using this session, Windows lets anonymous users perform certain activities, such as enumerating the names of domain accounts and network shares.
 
 
 
