@@ -384,6 +384,17 @@ The `IPC$` share is also known as a null session connection. By using this sessi
 Must check the SSL certificate and look into sections like the `Subject Alt Names`.
 
 
+### MySQL (Port 3306)
+
+ - auxiliary/scanner/mysql/mysql_version
+ - auxiliary/scanner/mysql/mysql_login (bruteforce)
+ - auxiliary/admin/mysql/mysql_enum (supports authenticated enumeration)
+ - auxiliary/admin/mysql/mysql_sql (to run custom sql query)
+ - auxiliary/scanner/mysql/mysql_file_enum
+ - auxiliary/scanner/mysql/mysql_hashdump
+ - auxiliary/scanner/mysql/mysql_schemadump
+ - auxiliary/scanner/mysql/mysql_writable_dirs
+
 
 
 #### Bruteforcing with Hydra
@@ -451,6 +462,8 @@ Host commands
 hosts
 services
 vulns
+loot
+creds
 ```
 
 Setting RHOSTS
