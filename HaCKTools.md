@@ -422,25 +422,38 @@ For salted hash, `hashcat` expects the input file to be in the format `<hash>:<s
 `msfconsole` is your friend here :smile:
 
 
+Databases & Workspaces
 ```
 db_status   # Making sure Postgresql DB is good and connected.
-
-workspace --add <NEW_WORKSPACE_NAME>
+workspace -a <NEW_WORKSPACE_NAME>    # --add a new workspace
 db_stats
+```
 
-db_import <NMAP-oX.xml>   # OR run nmap within msfconsole using db_nmap -sS <TARGET>
+Nmap inside Metasploit
+```
+db_import <NMAP-oX.xml>       # To import nmap scan results
+db_nmap -sS -sV -O <TARGET>   # To run nmap inside msfconsole
+```
 
+Host commands
+```
 hosts
 services
 vulns
+```
 
+Setting RHOSTS
+```
+hosts -R  
+setg RHOSTS <TARGET_IP>  # to set a global variable
+```
 
-
+Routing inside Meterpreter
+```
 meterpreter > run autoroute -s 192.64.132.2
 
 [!] Meterpreter scripts are deprecated. Try post/multi/manage/autoroute.
 [!] Example: run post/multi/manage/autoroute OPTION=value [...]
-
 ```
 
 
