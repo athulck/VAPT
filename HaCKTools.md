@@ -317,10 +317,20 @@ Check for **EternalBlue**
 > A critical remote code execution vulnerability exists in Microsoft SMBv1
 
 
+Look for ports 137, 138.
+```
+nmap -sU --top-ports 25 $TG 
+```
+
+
 ```
 enum4linux $TG
 ```
 
+Use `rpcclient` to determine whether anonymous connection (null session) is allowed on the samba server or not.
+```
+rpcclient -U "" -N demo.ine.local
+```
 
 Syntax: `smbclient -L //server/[service] -U <USERNAME>`
 Syntax: `smbclient -L -N //server/[service] -U <USERNAME>` for no password.
@@ -345,9 +355,10 @@ evil-winrm -i 10.10.196.249 -u Administrator -H '0e0363213e37b94221497260b0bcb4f
 
 ```
 nmap -p445 --script smb-protocols $TG
-nmap -p445 --script smb-security-mode demo.ine.local
-nmap -p445 --script smb-enum-sessions demo.ine.local
-nmap -p445 --script smb-enum-shares demo.ine.local
+nmap -p445 --script smb-os-discovery.nse $TG
+nmap -p445 --script smb-security-mode $TG
+nmap -p445 --script smb-enum-sessions $TG
+nmap -p445 --script smb-enum-shares   $TG
 
 nmap -p445 --script smb-server-stats --script-args smbusername=administrator,smbpassword=smbserver_771 demo.ine.local
 
