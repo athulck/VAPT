@@ -294,6 +294,48 @@ telnet $TG
 ```
 
 
+### SMTP (Port 25)
+
+```
+nc $TG 25
+telnet $TG 25
+```
+
+```
+EHLO example.com
+```
+ESMTP servers usually responds to `EHLO`. Always prefer `EHLO` if the server supports it — it gives you much more info.
+If the server doesn't recognize `EHLO`, fall back to `HELO` (very rare these days).
+
+Verifying user
+```
+VRFY admin
+> 252 2.0.0 admin
+```
+
+Sending message
+```
+MAIL FROM:<test@hacker.com>
+RCPT TO:<admin@openmailbox.xyz>
+DATA
+Subject: test
+
+This is a test message.
+.
+QUIT
+```
+OR
+```
+sendemail -f admin@attacker.xyz -t root@openmailbox.xyz -s $TG -u "Subject:IMP" -m "Hi root, a fake from admin" -o tls=no
+```
+
+Enumerating SMTP users
+```
+smtp-user-enum -U /usr/share/commix/src/txt/usernames.txt -t $TG
+msf6> use auxiliary/scanner/smtp/smtp_enum
+```
+
+
 ### HTTP (Port 80)
 Refer Web app exploitation
 
@@ -330,6 +372,12 @@ enum4linux $TG
 Use `rpcclient` to determine whether anonymous connection (null session) is allowed on the samba server or not.
 ```
 rpcclient -U "" -N demo.ine.local
+enumdomusers
+queryuser <RID>
+
+enumdomgroups
+getdompwinfo
+getdominfo
 ```
 
 Syntax: `smbclient -L //server/[service] -U <USERNAME>`
