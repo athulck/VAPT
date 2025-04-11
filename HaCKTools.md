@@ -3,11 +3,6 @@
 ## Web App Exploitation
 This probably has a custom developed web application which include some web security flaw which must be identified and exploited. The question is: Which security flaw?
 
-##### PHP Object Injection
-The [vulnerability](https://owasp.org/www-community/vulnerabilities/PHP_Object_Injection) occurs when user-supplied input is not properly sanitized before being passed to the unserialize() PHP function. In order to successfully exploit a PHP Object Injection vulnerability two conditions must be met:
-
-1. The application must have a class which implements a PHP magic method (such as __wakeup or __destruct) that can be used to carry out malicious attacks, or to start a “POP chain”.
-2. All of the classes used during the attack must be declared when the vulnerable unserialize() is being called, otherwise object autoloading must be supported for such classes.
 
 
 ### Directory Enumeration
