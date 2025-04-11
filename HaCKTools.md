@@ -471,6 +471,15 @@ Must check the SSL certificate and look into sections like the `Subject Alt Name
  - auxiliary/scanner/mysql/mysql_writable_dirs
 
 
+### RDP (Port 3389)
+
+BlueKeep RCE [CVE-2019-0708]
+```
+msf > use exploit/windows/rdp/cve_2019_0708_bluekeep_rce
+```
+
+
+
 
 #### Bruteforcing with Hydra
 
