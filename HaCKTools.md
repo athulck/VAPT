@@ -476,9 +476,6 @@ nmap -sU --top-ports 25 $TG
 ```
 
 
-```
-enum4linux $TG
-```
 
 Use `rpcclient` to determine whether anonymous connection (null session) is allowed on the samba server or not.
 ```
@@ -501,6 +498,7 @@ smbclient -L //$TG/<SHARE> -U '<USERNAME>'
 smbclient -I //$TG/ -U '<USERNAME>' -P '<PASSWORD>'  
 ```
 
+The `smbclient` command will give a `smb: \>` shell interface, if the authentication was successful.
 
 ```
 evil-winrm  -i 192.168.1.100 -u Administrator -p 'MySuperSecr3tPass123!' -s '/home/foo/ps1_scripts/' -e '/home/foo/exe_files/'
@@ -548,6 +546,19 @@ psexec.py Administrator@192.168.0.2 cmd.exe
 ```
 
 
+
+For samba shares, we can use `smbmap`.
+
+```
+$ smbmap -H $TG -u <USERNAME> -p <PASSWORD>
+$ smbmap -u <USERNAME> -p 'aad3b435b51404eeaad3b435b51404ee:da76f2c4c96028b7a6111aef4a50a94d' -H $TG
+$ smbmap -u 'apadmin' -p 'asdf1234!' -d ACME -Hh 10.1.3.30 -x 'net group "Domain Admins" /domain'
+```
+
+Can check for null sessions.
+```
+enum4linux -a $TG
+```
 
 
 ### HTTPS (Port 443)
