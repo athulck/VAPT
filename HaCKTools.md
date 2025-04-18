@@ -1,3 +1,4 @@
+This project often references target IP using the `$TG` expression. You can set the bash variable like: `TG=192.168.X.X`.
 
 This is a good place to start. :grin:
 ```
@@ -7,8 +8,8 @@ sudo nmap -sS -sV -O -Pn $TG
 | PORT     | STATE       | SERVICE |
 | -------- | ----------- | ------- |
 | 20/TCP   | [Open](#ftp-port-2021)  | FTP |
-| 21/TCP   | [Open](#ftp-port-2021)  | FTP |
-| 22/TCP   | [Open](#ssh-port-22)  | SSH |
+| 21/TCP   | [Open](#ftp-port-2021)  | FTPS - FTP over SSL/TLS |
+| 22/TCP   | [Open](#ssh-port-22)  | SSH / SFTP |
 | 23/TCP   | [Open](#telnet-port-23)  | Telnet |
 | 25/TCP   | [Open](#smtp-port-25)  | SMTP |
 | 53/UDP   | [Open](#)  | DNS |
@@ -281,13 +282,30 @@ sudo nmap -sS -A $TG -vvv -oN Nmap_init.txt
 
 
 ### FTP (Port 20/21)
-Check for `anonymous` login.
+
+Check for anonymous login using `ftp-anon` nmap script or go crazy with:
+```
+nmap -p 21 --script "ftp-*" $TG
+```
+
 ```
 ftp $TG
+sftp user@host [-P 2222]
 ```
 Note: You can use commands like `ls`, `pwd`, `cd` and `get`.
 
 Maybe checkout other variants of FTP like `lftp`.
+
+
+Bruteforcing FTP
+```
+USER_FILE=/usr/share/wordlists/metasploit/common_roots.txt
+PASS_FILE=/usr/share/wordlists/metasploit/unix_passwords.txt
+hydra -L $USER_FILE -P $PASS_FILE ftp://$TG
+crackmapexec ftp $TG -u $USER_FILE -p $PASS_FILE
+```
+
+
 
 ### SSH (Port 22)
 ```
