@@ -1,4 +1,50 @@
 
+This is a good place to start. :grin:
+```
+sudo nmap -sS -sV -O -Pn $TG
+```
+
+| PORT     | STATE       | SERVICE |
+| -------- | ----------- | ------- |
+| 20/TCP   | [Open](#ftp-port-2021)  | FTP |
+| 21/TCP   | [Open](#ftp-port-2021)  | FTP |
+| 22/TCP   | [Open](#ssh-port-22)  | SSH |
+| 23/TCP   | [Open](#telnet-port-23)  | Telnet |
+| 25/TCP   | [Open](#smtp-port-25)  | SMTP |
+| 53/UDP   | [Open](#)  | DNS |
+| 80/TCP   | [Open](#http-port-80)  | HTTP | 
+| 88/TCP   | [Open](#kerberos-port-88)  | Kerberos |
+| 123/UDP  | [Open](#)  | NTP |
+| 135/TCP  | [Open](#)  | Microsoft RPC Endpoint Mapper |
+| 137/UDP  | [Open](#)  | NetBIOS Name Service (NBNS) |
+| 138/UDP  | [Open](#)  |	NetBIOS Datagram Service |
+| 139/TCP  | [Open](#)  | NetBIOS Session Service (SMB/Samba) |
+| 161/UDP  | [Open](#)  | SNMP |
+| 389/TCP  | [Open](#)  | LDAP |
+| 443/TCP  | [Open](#https-port-443)  | HTTPS |
+| 445/TCP  | [Open](#smb-ports-139445)  | SMB/Samba |
+| 500/UDP  | [Open](#)  | IKE - VPNs (IPSec) |
+| 514/UDP  | [Open](#)  | Syslog |
+| 636/TCP  | [Open](#)  | LDAPS (LDAP over SSL) |
+| 1433/TCP | [Open](#)  | Microsoft SQL Server |
+| 3306/TCP | [Open](#mysql-port-3306)  | MySQL |
+| 3389/TCP | [Open](#rdp-port-3389)  | RDP |
+| 5985/TCP | [Open](#winrm-port-5985--5986-over-ssl)  | WinRM |
+| 5986/TCP | [Open](#winrm-port-5985--5986-over-ssl)  | WinRM over SSL |
+
+Check your MAC address [here](https://www.wireshark.org/tools/oui-lookup.html) (OUI Search)
+
+The `version-intensity` flag can range from 0 (light) to 9 (exhaustive) for various intensity.
+```
+$ sudo nmap -sV --version-intensity 8 $TG
+```
+
+To guess OS more aggressively, you can use:
+```
+$ nmap -O --osscan-guess $TG
+```
+
+
 
 ## Web App Exploitation
 This probably has a custom developed web application which include some web security flaw which must be identified and exploited. The question is: Which security flaw?
