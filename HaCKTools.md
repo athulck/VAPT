@@ -866,8 +866,9 @@ msf > use exploit/windows/misc/hta_server
 - [CyberChef](https://gchq.github.io/CyberChef/)
 - Have non-salted hashes? Give [CrackStation](https://crackstation.net/) a try!
 - Free [WebHooks](https://webhook.site/ ) for all!
-
-
+- [RequestBin](https://pipedream.com/requestbin)
+- [Interactsh](https://github.com/projectdiscovery/interactsh) - An OOB interaction gathering server and client library
+- [DNSBin](https://github.com/ettic-team/dnsbin) - The request.bin of DNS request
 
 ---
 
