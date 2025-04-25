@@ -189,7 +189,31 @@ Passive Subdomain enumeration and email (and other info) gathering.
 ```
 sublist3r -d $TG -e google,yahoo
 theHarvester -d $TG -b google,linkedin
+
+
+amass enum -passive -d target.com -o amass-passive.txt
+
+assetfinder --subs-only target.com
+subfinder -d target.com -silent -all
+waybackurls target.com > wayback.txt
+gau target.com > gau.txt
+github-subdomains -d target.com
+
+cat subdomains.txt | httpx -silent -title -tech-detect
+nuclei -l targets.txt -t nuclei-templates/ -passive
+
+
+subfinder -d target.com -silent > sub.txt
+assetfinder --subs-only target.com >> sub.txt
+amass enum -passive -d target.com >> sub.txt
+cat sub.txt | sort -u > all_subs.txt
+
+cat all_subs.txt | gau > gau_urls.txt
+cat all_subs.txt | waybackurls >> gau_urls.txt
+
 ```
+
+
 
 
 ##### DNS Zone Transfer
