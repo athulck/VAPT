@@ -50,6 +50,40 @@ $ nmap -O --osscan-guess $TG
 ## Web App Exploitation
 This probably has a custom developed web application which include some web security flaw which must be identified and exploited. The question is: Which security flaw?
 
+The Perfect 😅 Sample HTTP Request
+```
+GET /home.html HTTP/1.1
+Host: developer.mozilla.org
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Referer: https://developer.mozilla.org/testpage.html
+Connection: keep-alive
+```
+
+
+**Common HTTP/HTTPS headers**
+| Header Name         | Value |
+| ------------------- | ----- |
+| `Host`              | `developer.mozilla.org` | 
+| `User-Agent`        | `Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36` | 
+| `X-Forwarded-For`   | `127.0.0.1`  | 
+| `X-Forwarded-Host`  | `127.0.0.1`  |
+| `Referer`           |  `https://example.com/` |
+| `Content-Type`      | `text/html; charset=utf-8` |
+| `Authorization`     | `Bearer <credentials>` | 
+| `Origin`            | `null` |
+| `Cookie`            | `name=value; name2=value2; name3=value3` | 
+| `Accept`            | `*/*` |
+| 'Connection`        | `keep-alive` / `close` |
+
+
+Check out Mozilla docs for [HTTP Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers)
+
+Check out Mozilla docs for [HTTP Request Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods)
+
+Check out Mozilla docs for [HTTP response status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status)
 
 
 ### Directory Enumeration
