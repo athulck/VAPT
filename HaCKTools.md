@@ -354,7 +354,7 @@ nmap -p 21 --script "ftp-*" $TG
 ftp $TG
 sftp user@host [-P 2222]
 ```
-Note: You can use commands like `ls`, `pwd`, `cd` and `get`.
+Note: You can use commands like `ls`, `pwd`, `cd` and `get` when interacting with an FTP prompt.
 
 Maybe checkout other variants of FTP like `lftp`.
 
@@ -367,6 +367,9 @@ hydra -L $USER_FILE -P $PASS_FILE ftp://$TG
 crackmapexec ftp $TG -u $USER_FILE -p $PASS_FILE
 ```
 
+It is often difficult to get a shell from FTP as the service mainly transfers the file and does not run it. But, if we can control files on the root directory of a web server, then we can get the web server process to execute malicious shell code. 
+
+If we can upload a file without the execution privileges, then we can try defacing the website too.
 
 
 ### SSH (Port 22)
