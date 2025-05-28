@@ -665,6 +665,11 @@ Must check the SSL certificate and look into sections like the `Subject Alt Name
  - auxiliary/scanner/mysql/mysql_writable_dirs
 
 
+```
+mysql -u root -p <PASS> -h $TG
+```
+
+
 ### RDP (Port 3389)
 
 RDP scanner
