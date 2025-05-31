@@ -76,7 +76,7 @@ Connection: keep-alive
 | `Origin`            | `null` |
 | `Cookie`            | `name=value; name2=value2; name3=value3` | 
 | `Accept`            | `*/*` |
-| 'Connection`        | `keep-alive` / `close` |
+| `Connection`        | `keep-alive` / `close` |
 
 
 Check out Mozilla docs for [HTTP Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers)
@@ -829,13 +829,37 @@ set payload windows/meterpreter/reverse_tcp
 
 #### Shell Stabilization
 
+We can always start with:
+```
+/bin/bash -i
+```
+OR 
+
 `python -c 'import pty; pty.spawn("/bin/bash")'` <br>
 `export TERM=xterm` <br>
 [Optional] Hit **Ctrl + Z** and run `raw -echo; fg` <br>
 
 
-#### Got Shell? IG again!
+#### Local Enumeration
+
 `whoami` && `id` && `sudo -l` && `cat /etc/*release` && `uname -a`
+
+Check for any local services:
+
+```
+netstat -tulpn
+ss -tulpn
+```
+
+To find which program is using that port:
+```
+sudo lsof -i
+```
+
+Maybe try connecting to it using `nc`:
+```
+nc -nv 127.0.0.1 <PORT>
+```
 
 
 Few more Post Exploitation tricks:
