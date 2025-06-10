@@ -835,8 +835,12 @@ We can always start with:
 ```
 OR 
 
-`python -c 'import pty; pty.spawn("/bin/bash")'` <br>
-`export TERM=xterm` <br>
+```
+python -c 'import pty; pty.spawn("/bin/bash")'
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export TERM=xterm
+export SHELL=/bin/bash
+```
 [Optional] Hit **Ctrl + Z** and run `raw -echo; fg` <br>
 
 
