@@ -630,6 +630,7 @@ psexec.py Administrator@192.168.0.2 cmd.exe
 For samba shares, we can use `smbmap`.
 
 ```
+$ smbmap -H 10.5.18.98 -u 'guest'
 $ smbmap -H $TG -u <USERNAME> -p <PASSWORD>
 $ smbmap -u <USERNAME> -p 'aad3b435b51404eeaad3b435b51404ee:da76f2c4c96028b7a6111aef4a50a94d' -H $TG
 $ smbmap -u 'apadmin' -p 'asdf1234!' -d ACME -Hh 10.1.3.30 -x 'net group "Domain Admins" /domain'
