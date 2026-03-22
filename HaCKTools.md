@@ -427,25 +427,40 @@ telnet $TG
 
 
 ### SMTP (Port 25)
+SMTP uses port 25 by default for unecrypted communication, but can also use 465 and 587 for SMTPS.
 
+SMTP DOMAIN can be found by running; 
+```
+sudo nmap -sV -p25 $TARGET_IP | grep 'Service Info: Host: '
+```
+
+Try to establish a connection with the SMTP service:
 ```
 nc $TG 25
 telnet $TG 25
 ```
-
+Once you are in, you can try to interact with the service, query and gather info.
 ```
 EHLO example.com
 ```
 ESMTP servers usually responds to `EHLO`. Always prefer `EHLO` if the server supports it — it gives you much more info.
 If the server doesn't recognize `EHLO`, fall back to `HELO` (very rare these days).
 
-Verifying user
+Verifying user; used to confirm or verify the user name.
 ```
-VRFY admin
-> 252 2.0.0 admin
+VRFY <USER>
+> 252 2.0.0 <USER> # SUCCESS
 ```
 
-Sending message
+`EXPN <USER>`  command reveals the actual address of users aliases and lists of e-mail (mailing lists).
+
+Also try:
+```
+MAIL FROM: root@<domain>
+RCPT TO: #{user}@<domain>")
+```
+
+Sending a mail
 ```
 MAIL FROM:<test@hacker.com>
 RCPT TO:<admin@openmailbox.xyz>
@@ -460,6 +475,17 @@ OR
 ```
 sendemail -f admin@attacker.xyz -t root@openmailbox.xyz -s $TG -u "Subject:IMP" -m "Hi root, a fake from admin" -o tls=no
 ```
+
+
+Check for SMTP Open-Relay
+```
+sudo nmap -sV -p25,465,587 --script smtp-open-relay $TARGET_IP
+```
+SMTP User Enumeration
+```
+sudo nmap -sV -p25 --script smtp-enum-users --script-args smtp-enum-users.method=VRFY,smtp-enum-users.domain=<DOMAIN> $TARGET_IP
+```
+
 
 Enumerating SMTP users
 ```
@@ -581,6 +607,7 @@ getdominfo
 
 Use `smbclient` if you have username and password. This will list the shares.
 ```
+smbclient -L $TG   # for anonymous login
 smbclient -L $TG -U '<USERNAME>'
 ```
 
@@ -648,6 +675,25 @@ enum4linux -s <FULL_PATH_OF_SHARES> -u <USERNAME> -p <PASSWORD>  $TG
 ```
 
 
+### SNMP (Port 161/UDP)
+
+```
+nmap -sU -p 161 $TG
+nmap -sU -p 161 --script snmp-info $TG
+nmap -sU -p 161 --script=snmp-sysdescr $TG
+nmap -sU -p 161 --script snmp-netstat $TG
+nmap -sU -p 161 --script=snmp-processes $TG
+nmap -sU -p 161 --script snmp-win32-software $TG
+nmap -sU -p 161 --script snmp-win32-users $TG
+```
+
+In SNMP (Simple Network Management Protocol), community strings act as a form of authentication between the SNMP client and the SNMP agent. SNMP strings are used only by devices which support the SNMPv1 and SNMPv2c version of SNMP. SNMPv3 uses username/password authentication, along with an encryption key.
+
+We could use nmap `snmp-brute script` to find the community string. The script uses the `snmpcommunities.lst` list for brute-forcing it is located inside `/usr/share/nmap/nselib/data/snmpcommunities.lst` directory.
+
+```
+nmap -sU -p 161 --script=snmp-brute $TG
+```
 
 ### HTTPS (Port 443)
 
