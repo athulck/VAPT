@@ -59,15 +59,6 @@ nuclei -update-templates
 
 ## 2. Phase 1 — Information Gathering & Footprinting
 
-> **Goal:** Map the attack surface before touching the target.
-
-| Item | OWASP WSTG | CWE |
-|---|---|---|
-| Passive recon / OSINT | WSTG-INFO-01 | — |
-| Fingerprinting web server | WSTG-INFO-02 | CWE-200 |
-| Enumerate application entry points | WSTG-INFO-06 | — |
-| Spider / crawl for content | WSTG-INFO-07 | — |
-
 ### 2.1 Passive Reconnaissance (OSINT)
 
 - [ ] Google Dork the target
@@ -90,6 +81,7 @@ waybackurls target.com | tee wayback.txt
 # Subdomain enumeration via cert transparency
 subfinder -d target.com -all -recursive -o subdomains.txt
 amass enum -passive -d target.com -o amass_output.txt
+sublist3r -d target.com -e google,yahoo
 
 # Certificate transparency
 curl -s "https://crt.sh/?q=%25.target.com&output=json" | jq '.[].name_value' | sort -u
@@ -204,8 +196,6 @@ whois -h whois.radb.net -- '-i origin AS12345'
 
 ## 3. Phase 2 — Scanning & Enumeration
 
-> **Goal:** Discover all accessible endpoints, directories, and parameters.
-
 ### 3.1 Port & Service Scanning
 
 ```bash
@@ -307,17 +297,6 @@ nuclei -u https://target.com -t /root/nuclei-templates/ -severity critical,high,
 ---
 
 ## 4. Phase 3 — HTTP Response Header Analysis
-
-> **Goal:** Identify missing or misconfigured security headers that expose the application.
-
-| Vulnerability | OWASP | CWE | CVE/Ref |
-|---|---|---|---|
-| Missing CSP | WSTG-CONF-12 | CWE-693 | — |
-| Missing HSTS | WSTG-CONF-07 | CWE-319 | — |
-| Missing X-Frame-Options | WSTG-CONF-12 | CWE-1021 | — |
-| Missing X-Content-Type-Options | WSTG-CONF-12 | CWE-430 | — |
-| Clickjacking | WSTG-CLNT-09 | CWE-1021 | — |
-| Information Disclosure via headers | WSTG-INFO-02 | CWE-200 | — |
 
 ### 4.1 Checklist
 
@@ -426,23 +405,6 @@ xhr.send();
 
 ## 5. Phase 4 — Cryptographic Vulnerabilities
 
-> **Goal:** Identify weak TLS/SSL configurations that expose traffic to interception.
-
-| Vulnerability | OWASP | CWE | CVE |
-|---|---|---|---|
-| SSLv2 / SSLv3 enabled | WSTG-CRYP-01 | CWE-326 | CVE-2014-3566 (POODLE) |
-| TLS 1.0 / 1.1 enabled | WSTG-CRYP-01 | CWE-326 | — |
-| BEAST | WSTG-CRYP-01 | CWE-326 | CVE-2011-3389 |
-| POODLE | WSTG-CRYP-01 | CWE-326 | CVE-2014-3566 |
-| HEARTBLEED | WSTG-CRYP-01 | CWE-126 | CVE-2014-0160 |
-| DROWN | WSTG-CRYP-01 | CWE-326 | CVE-2016-0800 |
-| ROBOT | WSTG-CRYP-01 | CWE-326 | CVE-2017-13099 |
-| LOGJAM (DHE) | WSTG-CRYP-01 | CWE-326 | CVE-2015-4000 |
-| SWEET32 (64-bit blocks) | WSTG-CRYP-01 | CWE-326 | CVE-2016-2183 |
-| Weak cipher suites | WSTG-CRYP-01 | CWE-327 | — |
-| Self-signed / expired cert | WSTG-CRYP-01 | CWE-295 | — |
-| Mixed content | WSTG-CRYP-01 | CWE-311 | — |
-
 ### 5.1 Testing with testssl.sh
 
 ```bash
@@ -515,18 +477,6 @@ openssl s_client -connect target.com:443 -cipher NULL
 
 ## 6. Phase 5 — Authentication & Session Management
 
-> **Goal:** Break authentication mechanisms to gain unauthorized access.
-
-| Vulnerability | OWASP | CWE | CVE/Ref |
-|---|---|---|---|
-| Weak password policy | WSTG-ATHN-07 | CWE-521 | — |
-| Account enumeration | WSTG-ATHN-04 | CWE-204 | — |
-| Insecure cookie flags | WSTG-SESS-02 | CWE-614 | — |
-| Session fixation | WSTG-SESS-03 | CWE-384 | — |
-| Predictable session tokens | WSTG-SESS-04 | CWE-330 | — |
-| JWT vulnerabilities | WSTG-ATHN | CWE-347 | CVE-2015-9235 |
-| CSRF | WSTG-SESS-05 | CWE-352 | — |
-
 ### 6.1 Cookie & Session Analysis
 
 ```bash
@@ -588,15 +538,6 @@ hashcat -a 0 -m 16500 jwt_token.txt /usr/share/wordlists/rockyou.txt
 ---
 
 ## 7. Phase 6 — Cross-Site Scripting (XSS)
-
-> **Goal:** Inject malicious scripts into web pages viewed by other users.
-
-| Type | OWASP | CWE | CVE Examples | Exploit-DB |
-|---|---|---|---|---|
-| Reflected XSS | WSTG-CLNT-01, A03:2021 | CWE-79 | CVE-2023-32560 | EDB-50861 |
-| Stored XSS | WSTG-CLNT-01, A03:2021 | CWE-79 | CVE-2022-0147 | EDB-49820 |
-| DOM-Based XSS | WSTG-CLNT-01, A03:2021 | CWE-79 | CVE-2023-38646 | — |
-| mXSS (mutation) | WSTG-CLNT-01 | CWE-79 | — | — |
 
 ### 7.1 Reflected XSS
 
@@ -766,15 +707,6 @@ python3 domfuzz.py -u "https://target.com/#FUZZ"
 ---
 
 ## 8. Phase 7 — SQL Injection
-
-| Type | OWASP | CWE | CVE Examples | Exploit-DB |
-|---|---|---|---|---|
-| Error-based SQLi | WSTG-INPV-05, A03:2021 | CWE-89 | CVE-2023-23752 | EDB-51166 |
-| Union-based SQLi | WSTG-INPV-05 | CWE-89 | CVE-2022-41040 | EDB-50986 |
-| Blind (Boolean) SQLi | WSTG-INPV-05 | CWE-89 | CVE-2022-29455 | — |
-| Time-based Blind SQLi | WSTG-INPV-05 | CWE-89 | — | EDB-50272 |
-| Second-Order SQLi | WSTG-INPV-05 | CWE-89 | — | — |
-| Out-of-Band SQLi | WSTG-INPV-05 | CWE-89 | — | — |
 
 ### 8.1 Initial Detection
 
@@ -975,15 +907,6 @@ SELECT 'this is a test' INTO OUTFILE '/tmp/test.txt';
 
 ## 9. Phase 8 — Path Traversal, LFI & RFI
 
-> **Goal:** Read arbitrary files on the server or include remote code.
-
-| Vulnerability | OWASP | CWE | CVE Examples | Exploit-DB |
-|---|---|---|---|---|
-| Path Traversal | WSTG-ATHZ-01, A01:2021 | CWE-22 | CVE-2021-41773 (Apache) | EDB-50383 |
-| LFI | WSTG-INPV-11 | CWE-98 | CVE-2022-21661 (WordPress) | EDB-50082 |
-| RFI | WSTG-INPV-11 | CWE-98 | CVE-2022-0140 | — |
-| LFI to RCE via log poisoning | WSTG-INPV-11 | CWE-98 | — | — |
-
 ### 9.1 Path Traversal
 
 **Target parameters:** `file=`, `page=`, `path=`, `dir=`, `doc=`, `include=`, `template=`, `lang=`, `download=`
@@ -1124,15 +1047,6 @@ curl -s --path-as-is "https://target.com/cgi-bin/.%%32%65/.%%32%65/.%%32%65/etc/
 
 ## 10. Phase 9 — Brute Forcing & Default Credentials
 
-> **Goal:** Gain access via credential attacks on login panels, services, and APIs.
-
-| Vulnerability | OWASP | CWE | CVE/Ref |
-|---|---|---|---|
-| Weak password policy | WSTG-ATHN-07 | CWE-521 | — |
-| No account lockout | WSTG-ATHN-03 | CWE-307 | — |
-| Default credentials | WSTG-ATHN-02 | CWE-1392 | — |
-| No rate limiting | WSTG-ATHN-04 | CWE-307 | — |
-
 ### 10.1 Default Credentials
 
 ```bash
@@ -1247,15 +1161,6 @@ for i in $(seq 1 255); do echo "192.168.1.$i"; done > ips.txt
 
 ## 11. Phase 10 — HTTP Request Smuggling
 
-> **Goal:** Desynchronize front-end/back-end HTTP request parsing to poison the request queue.
-
-| Vulnerability | OWASP | CWE | CVE Examples | Exploit-DB |
-|---|---|---|---|---|
-| CL.TE Smuggling | WSTG-INPV | CWE-444 | CVE-2022-22720 (Apache) | EDB-50512 |
-| TE.CL Smuggling | WSTG-INPV | CWE-444 | CVE-2019-18277 (HAProxy) | — |
-| TE.TE Smuggling | WSTG-INPV | CWE-444 | — | — |
-| HTTP/2 Downgrade | WSTG-INPV | CWE-444 | CVE-2021-44224 | — |
-
 ### 11.1 Detection
 
 ```bash
@@ -1360,15 +1265,6 @@ python3 h2csmuggler.py --scan-list hosts.txt
 ---
 
 ## 12. Phase 11 — HTTP Verb & Parameter Tampering
-
-> **Goal:** Abuse HTTP method handling and parameter processing logic.
-
-| Vulnerability | OWASP | CWE | CVE/Ref |
-|---|---|---|---|
-| HTTP Verb Tampering | WSTG-CONF-06 | CWE-650 | — |
-| Parameter Pollution (HPP) | WSTG-INPV-04 | CWE-20 | — |
-| Mass Assignment | A01:2021 | CWE-915 | CVE-2012-2660 (Rails) |
-| IDOR via parameter | WSTG-ATHZ-04 | CWE-639 | — |
 
 ### 12.1 HTTP Verb Tampering
 
