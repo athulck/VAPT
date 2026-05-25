@@ -1,39 +1,54 @@
 
 
-
-### Web Application VAPT
- - [ ] Basic Information Gathering, Reconnaissance & Footprinting
- - [ ] Response Header Analysis
- - [ ] Fuzzing
- - [ ] Encryption/Cryptographic Weaknesses
- - [ ] XSS
- - [ ] SQLi
- - [ ] Command Injections
- - [ ] APIs
-
-### Network VAPT
- - [ ] Scanning big networks
- - [ ] Tools etc.
- - [ ] IDS/IPS/Firewall Evasions
-
-### Host VAPT
-The challenge here is to cover this section from both the Windows and Linux perspective.
-
-1. Attacking `Windows` Host from `Windows` Attacker Machine **`[WxW]`** <br>
-2. Attacking `Linux` Host from `Windows` Attacker Machine **`[WxL]`** <br>
-3. Attacking `Windows` Host from `Linux` Attacker Machine **`[LxW]`** <br>
-4. Attacking `Linux` Host from `Linux` Attacker Machine **`[LxL]`** <br>
-
-**Note**: The syntax followed here is [`ATTACKER_OS` x `VICTIM_OS`].
+#### Web Application VAPT
+https://github.com/athulck/VAPT/[tree/main]/WebApp
 
 
- - [ ] Basic Information Gathering, Reconnaissance & Footprinting
- - [ ] Services
-     - [ ] FTP
-     - [ ] SSH
+#### API VAPT
+https://github.com/athulck/VAPT/[tree/main]/API
 
- - [ ] Privilege Escalation
- - [ ] AD/DC VAPT
 
-### CTF Helper
- - [ ] CTF Helper
+#### Mobile Application VAPT
+https://github.com/athulck/VAPT/[tree/main]/Mobile
+https://github.com/athulck/VAPT/[tree/main]/Mobile/iOS
+https://github.com/athulck/VAPT/[tree/main]/Mobile/Android
+
+
+#### Thick-Client VAPT
+https://github.com/athulck/VAPT/[tree/main]/Thick-Client
+https://github.com/athulck/VAPT/[tree/main]/Thick-Client/Electron
+https://github.com/athulck/VAPT/[tree/main]/Thick-Client/.NET
+
+
+#### Network VAPT
+https://github.com/athulck/VAPT/[tree/main]/Network
+
+
+#### Host VAPT
+https://github.com/athulck/VAPT/[tree/main]/Host
+https://github.com/athulck/VAPT/[tree/main]/Host/WinX/
+https://github.com/athulck/VAPT/[tree/main]/Host/LinX/
+
+
+https://github.com/athulck/VAPT/[tree/main]/Host/Services/
+https://github.com/athulck/VAPT/[tree/main]/Host/Services/MySQL
+https://github.com/athulck/VAPT/[tree/main]/Host/Services/FTP
+https://github.com/athulck/VAPT/[tree/main]/Host/Services/SSH
+https://github.com/athulck/VAPT/[tree/main]/Host/Services/LDAP
+https://github.com/athulck/VAPT/[tree/main]/Host/Services/Kerberos
+
+https://github.com/athulck/VAPT/[tree/main]/Host/Services/Apache
+https://github.com/athulck/VAPT/[tree/main]/Host/Services/Tomcat
+https://github.com/athulck/VAPT/[tree/main]/Host/Services/Nginx
+
+
+#### Cloud VAPT
+https://github.com/athulck/VAPT/[tree/main]/Cloud
+https://github.com/athulck/VAPT/[tree/main]/Cloud/AWS
+https://github.com/athulck/VAPT/[tree/main]/Cloud/Azure
+https://github.com/athulck/VAPT/[tree/main]/Cloud/GCP
+
+#### CTF Helper
+https://github.com/athulck/VAPT/[tree/main]/CTF
+
+
