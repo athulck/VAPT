@@ -442,10 +442,14 @@ nmap -sT --top-ports 100 -iL alive_hosts.txt -Pn -T2
 
 **Packets sent:** `~3–5 per port per host` | **Packet type:** UDP datagrams — crafted per-protocol where possible | **Detectable:** Low (UDP scans are noisier to log but less monitored)
 
+**WARN**: UDP Scans can be really really slow. So, it's important to pick your targets well.
+
 ```bash
 # UDP scan key services: DNS(53), SNMP(161/162), TFTP(69), NTP(123), RPC(111)
 sudo nmap -sU -p 53,69,111,123,161,162,500,514,1900 -iL alive_hosts.txt \
   -T2 -Pn --version-intensity 0 -oA scan_udp_key
+
+sudo nmap -sU --top-ports 20 -iL <IP_list> -oA Initial_TCP_Scan -v
 
 # SNMP community string brute (if 161 is open) — can leak massive amount of info
 onesixtyone -c /usr/share/doc/onesixtyone/dict.txt -i alive_hosts.txt
@@ -1113,16 +1117,7 @@ proxychains nmap -sT -Pn <target>   # SOCKS proxy (TCP connect only)
 
 ---
 
-
 Use [nmaptocsv](https://github.com/maaaaz/nmaptocsv) to convert nmap outputs into CSV for reporting purposes.
-
-Do a UDP Scan as well. 
-
-**WARN**: UDP Scans can be really really slow. So, it's important to pick your targets well.
-
-```bash
-sudo nmap -sU --top-ports 20 -iL <IP_list> -oA Initial_TCP_Scan -v
-```
 
 For each Host, collect these informations:
 
@@ -1132,9 +1127,9 @@ For each Host, collect these informations:
  - [ ] NetBIOS/DNS Name
  - [ ] OS Version
 
+---
 
-
-#### Appendix: Nmap Options and Flags
+## Appendix: Nmap Options and Flags
 
 TARGET SPECIFICATION:
 
